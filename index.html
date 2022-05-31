@@ -2,12 +2,12 @@
 <html>
     <head>
         <title>How to Start with dhtmlxGrid</title>         
-        <script type="text/javascript" src="../../codebase/grid.js"></script>
-        <link rel="stylesheet" href="../../codebase/grid.css">
+        <script type="text/javascript" src="./../codebase/grid.js"></script>
+        <link rel="stylesheet" href="./../codebase/grid.css">
     </head>
     <body>
         <div id="grid_container"></div>
-        
+
         <style>
           .dhx_grid-body {
             width: 980px !important;
@@ -72,8 +72,8 @@
           }
 
           Promise.all([
-            fetch('../common/columns.json'),
-            fetch('../common/data.json'),
+            fetch('./common/columns.json'),
+            fetch('./common/data.json'),
           ]) 
             .then(response => Promise.all(response.map(r => r.json())))
             .then(([columns, data]) => {
