@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>How to Start with dhtmlxGrid</title>         
+        <script type="text/javascript" src="../../codebase/grid.js"></script>
+        <link rel="stylesheet" href="../../codebase/grid.css">
+    </head>
+    <body>
+        <div id="grid_container"></div>
+        
+        <style>
+          .dhx_grid-body {
+            width: 980px !important;
+          }
+
+          .dhx_header-wrapper {
+            height: 100px !important;
+          }
+
+          .dhx_header-row,
+          .dhx_grid-header-cell {
+            text-align: center;
+            white-space: normal;
+            height: 50px !important;
+          }
+
+          .dhx_data-wrap {
+            overflow: auto;
+          }
+          .dhx_grid-content {
+            width: 980px !important;
+            height: 660px !important;
+          }
+
+          .dhx_grid-row {
+            height: 60px !important;
+          }
+
+          .dhx_grid-cell {
+            white-space: normal;
+            height: 100% !important;;
+          }
+        </style>
+
+        <script>
+          function sortByKey(data, sortKey, dir) {
+            return data.sort((prev, next) => {
+              comparingPrev = parseInt(prev[sortKey]) || prev[sortKey];
+              comparingNext = parseInt(next[sortKey]) || next[sortKey];
+
+              if (!isNaN(comparingPrev) && !isNaN(comparingNext)) {
+                return dir === 'asc' 
+                  ? comparingPrev - comparingNext 
+                  : comparingNext - comparingPrev;
+              }
+              
+              return dir === 'asc' 
+                ? `${comparingPrev}`.localeCompare(`${comparingNext}`)
+                : `${comparingNext}`.localeCompare(`${comparingPrev}`);
+            })
+          }
+
+          function formatDate(data) {
+            return data.map(item => {
+              const { creationDate } = item;
+
+              return {
+                ...item,
+                creationDate: new Date(creationDate)
+              }
+            })
+          }
+
+          Promise.all([
+            fetch('../common/columns.json'),
+            fetch('../common/data.json'),
+          ]) 
+            .then(response => Promise.all(response.map(r => r.json())))
+            .then(([columns, data]) => {
+              
+              const sortBy = localStorage.getItem('sortBy');
+              const { dir, by } = JSON.parse(sortBy);
+
+              if (sortBy) {
+                data = sortByKey(data, by, dir);
+              }
+
+              const formattedData = formatDate(data);
+
+              const grid = new dhx.Grid("grid_container", {
+                columns,
+                data: formattedData,
+                height: 700,
+              });
+
+              grid.events.on("afterSort", () => {
+                const sortBy = grid.getSortingState();
+
+                localStorage.setItem('sortBy', JSON.stringify(sortBy));
+              });
+            });
+        </script>
+    </body>
+</html>
