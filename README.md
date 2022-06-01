@@ -1,5 +1,9 @@
 # DHTMLX-CoPs grid table
 
+## Description
+
+This is a data table with possibility of sorting and filtering columns and also it keeps current sorting order after page reload
+
 ## Local development
 
 ### Installing
